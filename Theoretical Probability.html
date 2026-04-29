@@ -1,0 +1,261 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dice & Coin Probability Simulator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        section {
+            margin-bottom: 50px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            width: 90%;
+            max-width: 500px;
+        }
+
+        .title {
+            font-size: 1.5rem;
+            margin-bottom: 10px;
+            text-align: center;
+        }
+
+        .face-container {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+        }
+
+        .dice-face,
+        .coin-face {
+            width: 100px;
+            height: 100px;
+            background-color: #fff;
+            border: 2px solid #000;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            transition: transform 0.1s, background-color 0.1s;
+        }
+
+        .dice-face {
+            border-radius: 10px;
+        }100
+
+        .coin-face {
+            border-radius: 50%;
+        }
+
+        input[type="number"] {
+            padding: 10px;
+            margin-bottom: 10px;
+            border: 2px solid #ddd;
+            border-radius: 5px;
+            width: 100%;
+            font-size: 1rem;
+        }
+
+        button {
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            background-color: #007BFF;
+            color: white;
+            font-size: 1rem;
+            cursor: pointer;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        canvas {
+            margin-top: 20px;
+        }
+    </style>
+</head>
+
+<body>
+
+    <!-- Dice Section -->
+    <section>
+        <div class="title">🎲 Dice Roll Simulator</div>
+        <div class="face-container">
+            <div class="dice-face" id="dice">1</div>
+        </div>
+        <input type="number" id="rollCount" placeholder="Enter number of rolls" min="1">
+        <button onclick="rollDice()">Roll Dice</button>
+        <canvas id="diceChart" width="400" height="200"></canvas>
+        <canvas id="probabilityChart" width="400" height="200"></canvas>
+    </section>
+
+    <!-- Coin Section -->
+    <section>
+        <div class="title">🪙 Coin Flip Simulator</div>
+        <div class="face-container">
+            <div class="coin-face" id="coin">H</div>
+        </div>
+        <input type="number" id="flipCount" placeholder="Enter number of flips" min="1">
+        <button onclick="flipCoins()">Flip Coins</button>
+        <canvas id="coinChart" width="400" height="200"></canvas>
+    </section>
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script>
+        // Dice Simulation
+        const dice = document.getElementById('dice');
+        const ctx = document.getElementById('diceChart').getContext('2d');
+        const probCtx = document.getElementById('probabilityChart').getContext('2d');
+
+        let diceChart = new Chart(ctx, {
+            type: 'line',
+            data: {
+                labels: [],
+                datasets: [{
+                    label: 'Cumulative Average',
+                    borderColor: 'blue',
+                    fill: false,
+                    data: []
+                }, {
+                    label: 'Expected Value (3.5)',
+                    borderColor: 'red',
+                    borderDash: [10, 5],
+                    fill: false,
+                    data: []
+                }]
+            },
+            options: {
+                scales: {
+                    x: {title: {display: true, text: 'Number of Rolls'}},
+                    y: {min: 1, max: 6, title: {display: true, text: 'Average'}}
+                }
+            }
+        });
+
+        let probabilityChart = new Chart(probCtx, {
+            type: 'bar',
+            data: {
+                labels: ['1', '2', '3', '4', '5', '6'],
+                datasets: [{
+                    label: 'Relative Frequency',
+                    backgroundColor: '#007BFF',
+                    data: [0, 0, 0, 0, 0, 0]
+                }]
+            },
+            options: {
+                scales: {
+                    y: {beginAtZero: true, max: 1, title: {display: true, text: 'Probability'}},
+                    x: {title: {display: true, text: 'Dice Face'}}
+                }
+            }
+        });
+
+        function rollDice() {
+          const rollCount = parseInt(document.getElementById('rollCount').value) || 10;
+          let currentRoll = 0, rolls = [], faceCounts = [0, 0, 0, 0, 0, 0];
+          diceChart.data.labels = [];
+          diceChart.data.datasets[0].data = [];
+          diceChart.data.datasets[1].data = [];
+          probabilityChart.data.datasets[0].data = [0, 0, 0, 0, 0, 0];
+
+          const intervalSpeed = Math.max(20, 300 - rollCount * 5); // ← dynamic speed
+
+          const rollInterval = setInterval(() => {
+            currentRoll++;
+            const randomFace = Math.floor(Math.random() * 6) + 1;
+            dice.textContent = randomFace;
+            dice.style.transform = `rotate(${Math.random() * 20 - 10}deg)`;
+            dice.style.backgroundColor = getRandomColor();
+
+            rolls.push(randomFace);
+            faceCounts[randomFace - 1]++;
+            const avg = rolls.reduce((a, b) => a + b, 0) / rolls.length;
+
+            diceChart.data.labels.push(currentRoll);
+            diceChart.data.datasets[0].data.push(avg);
+            diceChart.data.datasets[1].data.push(3.5);
+            diceChart.update();
+
+            probabilityChart.data.datasets[0].data = faceCounts.map(c => c / rolls.length);
+            probabilityChart.update();
+
+            if (currentRoll >= rollCount) clearInterval(rollInterval);
+          }, intervalSpeed);
+        }
+
+        function getRandomColor() {
+            const colors = ['#FF6347', '#FFD700', '#ADFF2F', '#20B2AA', '#1E90FF', '#BA55D3'];
+            return colors[Math.floor(Math.random() * colors.length)];
+        }
+
+        // Coin Simulation
+        const coin = document.getElementById('coin');
+        const coinCtx = document.getElementById('coinChart').getContext('2d');
+        let coinChart = new Chart(coinCtx, {
+            type: 'bar',
+            data: {
+                labels: ['Heads', 'Tails'],
+                datasets: [{
+                    label: 'Probability (%)',
+                    backgroundColor: ['blue', 'green'],
+                    data: [0, 0]
+                }]
+            },
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true,
+                        max: 100,
+                        title: {
+                            display: true,
+                            text: 'Probability (%)'
+                        }
+                    }
+                }
+            }
+        })
+
+        function flipCoins() {
+          const flipCount = parseInt(document.getElementById('flipCount').value) || 10;
+          let currentFlip = 0, heads = 0, tails = 0;
+
+          const intervalSpeed = Math.max(20, 300 - flipCount * 5); // ← dynamic speed
+
+          const flipInterval = setInterval(() => {
+            currentFlip++;
+            const result = Math.random() < 0.5 ? 'H' : 'T';
+            coin.textContent = result;
+            coin.style.transform = `rotate(${Math.random() * 360}deg)`;
+
+            result === 'H' ? heads++ : tails++;
+
+            const headsPct = (heads / currentFlip) * 100;
+            const tailsPct = (tails / currentFlip) * 100;
+
+            coinChart.data.datasets[0].data = [headsPct, tailsPct];
+            coinChart.update();
+
+            if (currentFlip >= flipCount) clearInterval(flipInterval);
+          }, intervalSpeed);
+        }
+    </script>
+</body>
+
+</html>
