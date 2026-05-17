@@ -1,24 +1,26 @@
-# 🔐 MyPass — Password Manager
+# 🎲 Theoretical Probability Simulator
 
-> A lightweight CLI tool to store, retrieve, and generate passwords — all locally, all yours.
+> Watch the law of large numbers prove itself — live, in your browser.
 
-Built in Python as a practical dive into file handling, data structures, and real-world CLI design. No bloat, no cloud dependency — just a fast, simple manager that works from your terminal.
+Flip a coin. Roll a dice. Run it 10 times, 100 times, 1000 times — and watch how the actual results inch closer and closer to the theoretical probability. This simulator makes that convergence visible.
 
 ---
 
 ## 🎯 What It Does
 
-MyPass lets you save credentials for any service, retrieve them instantly, and copy passwords straight to your clipboard — all from the command line.
+The simulator runs repeated trials of two classic probability experiments — a coin flip (expected: 50%) and a dice roll (expected: ~16.7% per face) — and charts how the observed probability moves toward the theoretical value as trials increase.
+
+It's a hands-on demonstration of the **Law of Large Numbers**.
 
 ---
 
 ## ✨ Features
 
-- 🔑 Save credentials (service, email, password) in one command
-- 🔍 Retrieve stored passwords instantly by service name
-- 📋 Auto-copies password to clipboard via `pyperclip`
-- 💾 Persistent local storage using JSON
-- ⚡ Minimal CLI — no setup overhead
+- 🪙 Coin flip simulation with live probability tracking
+- 🎲 Dice roll simulation across all 6 faces
+- 📈 Real-time chart showing convergence to theoretical probability
+- 🔁 Run as many trials as you want — watch the line flatten out
+- 🌐 Runs entirely in the browser — no install needed
 
 ---
 
@@ -26,79 +28,54 @@ MyPass lets you save credentials for any service, retrieve them instantly, and c
 
 | | |
 |---|---|
-| Language | Python 3 |
-| Storage | JSON |
-| Clipboard | pyperclip |
-| Packaging | Poetry |
+| Language | HTML + JavaScript |
+| Rendering | Browser-native Canvas / DOM |
+| Math | Vanilla JS probability logic |
 
 ---
 
-## 📂 Project Structure
+## 🚀 How to Run
 
-```
-MyPass/
-├── main.py          # Core CLI logic
-├── data.json        # Local credential store
-├── pyproject.toml   # Dependencies
-└── poetry.lock
-```
+**Option 1 — Direct:**
+Download `Theoretical Probability.html` and open it in any browser.
 
----
-
-## ⚙️ Installation
-
+**Option 2 — Live preview:**
+Clone the repo and serve it locally:
 ```bash
-# Clone the repo
-git clone https://github.com/withaarav/Password-Manager.git
-cd Password-Manager
-
-# Install dependencies
-pip install pyperclip
-
-# Run
-python main.py
+git clone https://github.com/withaarav/Theoretical-Probability-Sim.git
+cd Theoretical-Probability-Sim
+# Open the .html file in your browser
 ```
 
----
-
-## 💡 How It Works
-
-Credentials are stored in `data.json` as structured entries:
-
-```json
-{
-  "github": {
-    "email": "you@example.com",
-    "password": "your_password"
-  }
-}
-```
-
-On retrieval, the password is loaded and copied to your clipboard automatically.
+No dependencies. No build step. Just open and run.
 
 ---
 
 ## 🧠 What I Learned
 
-- Structuring real-world CLI tools in Python
-- Reading and writing persistent data with JSON
-- Handling user input and edge cases cleanly
-- Using `pyperclip` for clipboard integration
+- Simulating randomness and sampling distributions in JavaScript
+- Visualizing statistical convergence with live-updating charts
+- Understanding why more data = more reliable probability estimates
+- Building interactive browser tools without any frameworks
 
 ---
 
-## ⚠️ Disclaimer
+## 📐 The Math
 
-This is a **learning project** — passwords are stored in plain text locally. Not intended for production use. Encryption is on the roadmap.
+For a fair coin: P(heads) = 0.5
+
+For a fair 6-sided die: P(any face) = 1/6 ≈ 0.1667
+
+After enough trials, your observed frequency will approach these values — the simulator shows exactly when and how.
 
 ---
 
 ## 🔮 What's Next
 
-- [ ] Encrypt stored passwords (Fernet / AES)
-- [ ] Add a master password with hashed authentication
-- [ ] GUI version with Tkinter or PyQt
-- [ ] Cloud sync option
+- [ ] Add more experiments (card draws, Monty Hall problem)
+- [ ] Let users set custom probabilities
+- [ ] Export results as CSV
+- [ ] Add animated step-by-step mode for teaching
 
 ---
 
