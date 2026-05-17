@@ -64,7 +64,9 @@ No dependencies. No build step. Just open and run.
 
 For a fair coin: P(heads) = 0.5
 
-For a fair 6-sided die: P(any face) = 1/6 ≈ 0.1667
+For a fair 6-sided die: P(any face) = 1/6
+
+For a fair dice, the expected probability is 3.5
 
 After enough trials, your observed frequency will approach these values — the simulator shows exactly when and how.
 
